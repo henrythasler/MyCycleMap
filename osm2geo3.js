@@ -67,12 +67,29 @@ var osm2geo = function (osm) {
     // var $polynodes = $("node", $xml);
     var $ways = $xml.find("way"),
         $polynodes = $xml.find("node");
-
+	
     for (j = 0; j < $ways.length; j++) {
 
         var feature = {},
+
+
         // List all the nodes
-            $nodes = $ways.eq(j).find("nd");
+        $nodes = $ways.eq(j).find("nd");
+
+	
+// modified to convert polygons to point	
+        var t = $nodes.eq(0).attr("ref");
+            for (i = 0; i < $polynodes.length; i++) {
+                if ($polynodes.eq(i).attr("id") === t) {
+		    feature = getFeature($ways.eq(j), "Point");
+		    feature.geometry.coordinates.push(parseFloat($polynodes.eq(i).attr("lon")));
+		    feature.geometry.coordinates.push(parseFloat($polynodes.eq(i).attr("lat")));
+                    break;
+                }
+            }
+// end mod            
+	
+/*	
         // If first and last nd are same, then its a polygon
         if ($nodes.last().attr("ref") === $nodes.first().attr("ref")) {
             feature = getFeature($ways.eq(j), "Polygon");
@@ -95,6 +112,7 @@ var osm2geo = function (osm) {
                 }
             }
         }
+*/        
         // Save the LineString in the Main object
         geo.features.push(feature);
     }
