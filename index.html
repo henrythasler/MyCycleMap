@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MyBikeMap mobile</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="dist/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="dist/leaflet.ie.css" /><![endif]-->
+
+	<link rel="stylesheet" href="map.css" />
+	
+<!--	<script src="jquery-1.8.0.min.js"></script>
+-->
+	<script src="jquery-1.9.1.min.js"></script>
+<!--	
+	<script src="jquery-1.9.1.js"></script>
+	<script src="jquery-migrate-1.1.1.js"></script>
+-->
+
+	<script src="osm2geo3.js"></script>
+	
+	<script src="dist/leaflet-mod.js"></script>
+	<script src="map.js"></script>
+	
+</head>
+<body>
+	<div id="map"></div>
+
+
+	<!-- Piwik -->
+	<script type="text/javascript">
+	var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.thasler.org/admin/piwik/" : "http://www.thasler.org/admin/piwik/");
+	document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+	</script><script type="text/javascript">
+	try {
+	var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 3);
+	piwikTracker.trackPageView();
+	piwikTracker.enableLinkTracking();
+	} catch( err ) {}
+	</script><noscript><p><img src="http://thasler.org/admin/piwik/piwik.php?idsite=3" style="border:0" alt="" /></p></noscript>
+	<!-- End Piwik Tracking Code -->
+</body>
+</html>
