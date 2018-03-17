@@ -1,7 +1,7 @@
 <?php
 
 // image-type can be 'png' or 'jpg'
-$img_type = 'jpg';
+$img_type = 'png';
 
 $img_notfound = 'img/notfound.png';
 $img_dberror = 'img/dberror.png';
@@ -25,30 +25,31 @@ function senderror($filename)
 
 // main part
 try{
-    $db = new SQLite3('tiledb/MyCycleMap-'.$img_type.'.sqlitedb');
-
     // filter input strings to prevent db-injection hacks
     $x = (filter_var($_GET['x'], FILTER_VALIDATE_INT, $options)) ? $_GET['x'] : 0;
     $y = (filter_var($_GET['y'], FILTER_VALIDATE_INT, $options)) ? $_GET['y'] : 0;
-    $zoom = (filter_var($_GET['z'], FILTER_VALIDATE_INT, $options)) ? (17-$_GET['z']) : 0;
+    $zoom = (filter_var($_GET['z'], FILTER_VALIDATE_INT, $options)) ? $_GET['z'] : 0;
+
+    $url = 'http://89.163.224.201:8080/'.$_GET['layer'].'/'.$zoom.'/'.$x.'/'.$y.'.'.$img_type;
     
-    
-    $result = $db->querySingle('SELECT image FROM tiles WHERE x='.$x.' AND y='.$y.' AND z='.$zoom);
+    $ch = curl_init(str_replace ( ' ', '%20', $url));    
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $result = curl_exec($ch);
+    curl_close($ch);    
 
     if($result==false){
-	// db does not contain specified tile
-	senderror($img_notfound);
+        // db does not contain specified tile
+        senderror($img_notfound);
     }
     else{
-	// return tile data
-	header('Content-type: image/'.$img_type);
-	header("Content-Length: " . strlen($result));
-	echo $result;
+        // return tile data
+        header('Content-type: image/'.$img_type);
+        header("Content-Length: " . strlen($result));
+        echo $result;
     }
-    $db->close();
 }
     
 catch(Exception $e){
     senderror($img_dberror);
-}    
+} 
 ?>

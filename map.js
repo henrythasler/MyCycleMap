@@ -235,10 +235,10 @@ $(document).ready(function()
     
 
 // sqlite-based	php tileserver
-	var funcLayer = new L.tileLayer('tileserver.php?z={z}&x={x}&y={y}', {
+	var funcLayer = new L.tileLayer('tileserver.php?layer=tiles&z={z}&x={x}&y={y}', {
 		minZoom: 1,
 		maxZoom: 18,
-		maxNativeZoom: 15,
+		maxNativeZoom: 16,
 		continuousWorld: false,
 		noWrap: true,
 		attribution: 'v'+L.version+',  Map data &copy; OpenStreetMap, Renderstyle &copy; Henry Thasler'
@@ -298,14 +298,14 @@ $(document).ready(function()
 		"Bikeshop": CyclingMarker,
 		"Supermarket": ShopMarker
 	};	
-	L.control.layers(overlayMaps, 0, {collapsed: false}).addTo(map);
+	L.control.layers(overlayMaps, {}, {collapsed: false}).addTo(map);
 
 	
 // Add Route polyline	
 	var Route = L.polyline([], {color: 'red', opacity: 0.5, clickable:false, editable:true}).addTo(map);
 
 // Add Ruler Polyline	
-	var Ruler = L.polyline([], {color: 'green', opacity: 0.5, clickable:false}).addTo(map);
+	var Ruler = L.geodesic([], {color: 'green', opacity: 0.5, steps: 20, clickable:false}).addTo(map);
 
 // Add Track Profile Window	
 	//all used options are the default values
@@ -455,6 +455,7 @@ $(document).ready(function()
 			}, this);
 
 		// measure button
+		/*
 		var measure = L.DomUtil.create('a', 'measure', this._div);
 		measure.href = '#';
 		measure.title = 'Measurement Tools';
@@ -462,7 +463,7 @@ $(document).ready(function()
 			L.DomEvent.stopPropagation(e);
 			Mode=1-Mode;
 			}, this);
-		
+		*/
 		
 		// open button
 		var opentrack = L.DomUtil.create('a', 'open leaflet-bar-part-bottom', this._div);
@@ -521,16 +522,21 @@ $(document).ready(function()
 	    }
 	  else
 	    {
-	    RulerProperties.push(e.latlng);
-	    if(RulerProperties.length>2) RulerProperties.splice(0,1);
-	       
-	    if(RulerProperties.length>=2)   
-	      {
-	      Ruler.setLatLngs(RulerProperties);
-	      }
+	    RulerProperties[0]=e.latlng;
 	    }
 	      
 	  // map.panTo(e.latlng);
+	});
+	
+	map.on('mousemove', function(e) 
+	{
+	  if((Mode==1) && (RulerProperties.length>0)) {
+	    RulerProperties[1]=e.latlng;
+	    if(RulerProperties.length>=2)   
+	      {
+	      Ruler.setLatLngs([RulerProperties]);
+	      }
+	  }
 	});
 
 	map.on('locationfound', onLocationFound);
